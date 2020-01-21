@@ -121,7 +121,7 @@ pub mod solve {
                 satisfy(reduce(guess(var, true, e))) ||
                 satisfy(reduce(guess(var, false, e))),
                 // this case cannot ever happen, jus here to make compiler happy
-                _                    => false
+                _                => false
 
         }
     
