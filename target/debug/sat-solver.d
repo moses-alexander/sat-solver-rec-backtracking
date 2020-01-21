@@ -1,0 +1,1 @@
+/Users/moses/Documents/rust/sat-solver/target/debug/sat-solver: /Users/moses/Documents/rust/sat-solver/src/expr.rs /Users/moses/Documents/rust/sat-solver/src/main.rs /Users/moses/Documents/rust/sat-solver/src/test.rs
