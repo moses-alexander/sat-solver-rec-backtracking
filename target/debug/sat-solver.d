@@ -1,1 +1,1 @@
-/Users/moses/Documents/rust/sat-solver/target/debug/sat-solver: /Users/moses/Documents/rust/sat-solver/src/expr.rs /Users/moses/Documents/rust/sat-solver/src/main.rs /Users/moses/Documents/rust/sat-solver/src/test.rs
+/Users/moses/Documents/rust/sat-solver-rec-backtracking/target/debug/sat-solver: /Users/moses/Documents/rust/sat-solver-rec-backtracking/src/expr.rs /Users/moses/Documents/rust/sat-solver-rec-backtracking/src/main.rs /Users/moses/Documents/rust/sat-solver-rec-backtracking/src/test.rs

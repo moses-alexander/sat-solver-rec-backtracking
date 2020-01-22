@@ -1,6 +1,6 @@
 // data type and function defns
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Expr {
     Var(char),
     Const(bool),
@@ -9,6 +9,7 @@ pub enum Expr {
     Or(Box<Expr>, Box<Expr>),
     NULL
 }
+
 
 pub mod solve {
 
@@ -44,7 +45,7 @@ pub mod solve {
         let b = reduce(e2);
         match a {
             Expr::Const(false) => Expr::Const(false),
-            Expr::Const(true) => match b {
+            Expr::Const(true)  => match b {
                                     Expr::Const(true)  => Expr::Const(true),
                                     Expr::Const(false) => Expr::Const(false),
                                     Expr::Var(_c)      => Expr::And(
@@ -52,8 +53,8 @@ pub mod solve {
                                                             Box::new(b)),
                                     _                  => Expr::NULL
             }
-            Expr::Var(_c) => Expr::And(Box::new(a), Box::new(b)),
-            _             => Expr::NULL
+            Expr::Var(_c)      => Expr::And(Box::new(a), Box::new(b)),
+            _                  => Expr::NULL
         }
     }
 
@@ -62,17 +63,17 @@ pub mod solve {
         let a = reduce(e1);
         let b = reduce(e2);
         match a {
-            Expr::Const(true) => Expr::Const(true),
+            Expr::Const(true)  => Expr::Const(true),
             Expr::Const(false) => match b {
-                                    Expr::Const(false)  => Expr::Const(false),
-                                    Expr::Const(true) => Expr::Const(true),
+                                    Expr::Const(false) => Expr::Const(false),
+                                    Expr::Const(true)  => Expr::Const(true),
                                     Expr::Var(_c)      => Expr::And(
                                                             Box::new(a),
                                                             Box::new(b)),
                                     _                  => Expr::NULL
             }
-            Expr::Var(_c) => Expr::And(Box::new(a), Box::new(b)),
-            _             => Expr::NULL
+            Expr::Var(_c)      => Expr::And(Box::new(a), Box::new(b)),
+            _                  => Expr::NULL
         }
     }
 
@@ -89,21 +90,24 @@ pub mod solve {
 
     fn guess (var: char, constant: bool, e: Expr) -> Expr {
         match e {
-            Expr::Var(c)      => if c == var {return Expr::Const(constant);}
-                                 else        {return Expr::Var(c);},
+            Expr::Var(c)      => if c == var {
+                                    return Expr::Const(constant);
+                                 } else {
+                                    return Expr::Var(var); 
+                                 }
             Expr::Const(b)    => Expr::Const(b),
-            Expr::Not(e1)     => guess(var, constant, *e1),
+            Expr::Not(e1)     => Expr::Not(Box::new(guess(var, constant, *e1))),
             Expr::And(e1, e2) => Expr::And(
                                     Box::new(guess(var, constant, *e1)),
                                     Box::new(guess(var, constant, *e2))),
-            Expr::Or(e1, e2) => Expr::Or(
+            Expr::Or(e1, e2)  => Expr::Or(
                                     Box::new(guess(var, constant, *e1)),
                                     Box::new(guess(var, constant, *e2))),
-            Expr::NULL       => Expr::NULL
+            Expr::NULL        => Expr::NULL
         }
     }
 
-    pub fn reduce (e: Expr) -> Expr {
+    fn reduce (e: Expr) -> Expr {
         match e {
             Expr::Var(c)      => Expr::Var(c),
             Expr::Const(b)    => Expr::Const(b),
@@ -114,16 +118,14 @@ pub mod solve {
         }
     }
 
-    fn satisfy (e: Expr) -> bool {
-        match find(e) {
-            None                 => unconst(e).unwrap(),
+    pub fn satisfy (e: Expr) -> bool {
+        match find(e.clone()) {
+            None                 => unconst(reduce(e.clone())).unwrap(),
             Some(Expr::Var(var)) =>
-                satisfy(reduce(guess(var, true, e))) ||
-                satisfy(reduce(guess(var, false, e))),
-                // this case cannot ever happen, jus here to make compiler happy
+                (satisfy(reduce(guess(var, true, e.clone())))) ||
+                (satisfy(reduce(guess(var, false, e.clone())))),
+            // this case cannot ever happen, jus here to make compiler happy
             _                    => false
-
         }
-    
     }
 }

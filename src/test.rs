@@ -8,6 +8,8 @@ pub mod test {
 
     fn ff () -> Expr { return Expr::Const(false); }
 
+    fn var(c: char) -> Expr { return Expr::Var(c); }
+
     fn not (x: Expr) -> Expr {
         return Expr::Not(Box::new(x));
     }
@@ -25,6 +27,15 @@ pub mod test {
     }
 
     pub fn test_expr1 () -> Expr {
-        return not(or(and(and(tt(), ff()), tt()), or(tt(), ff())));
+        return not(and(tt(), ff()));
     }
+
+    pub fn test_expr2 () -> Expr {
+        return and(var('x'), not(var('x')));
+    }
+
+    pub fn test_expr3 () -> Expr {
+        return or(var('x'), not(var('x')));
+    }
+
 }
